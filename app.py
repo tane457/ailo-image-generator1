@@ -2,9 +2,20 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import requests
 import os
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_caching import Cache
 
 app = Flask(__name__)
 CORS(app)
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 def generate_image(prompt):
     api_url = "https://prompt.glitchy.workers.dev/gen"
@@ -32,10 +43,17 @@ def generate_image(prompt):
         return {"success": False}
 
 @app.route('/')
+@cache.cached(timeout=3600)
 def home():
+    return render_template('home.html')
+
+@app.route('/image-generator')
+@cache.cached(timeout=3600)
+def image_generator():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
+@limiter.limit("10 per minute")
 def generate():
     prompt = request.json.get('prompt')
     result = generate_image(prompt)

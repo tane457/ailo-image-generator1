@@ -154,6 +154,54 @@ def get_video_info():
             "error": "Bir hata oluştu"
         })
 
+@app.route('/social')
+@cache.cached(timeout=3600)
+def social():
+    return render_template('social.html')
+
+@app.route('/improve-post', methods=['POST'])
+@limiter.limit("20 per minute")
+def improve_post():
+    data = request.json
+    platform = data.get('platform')
+    topic = data.get('topic')
+    content = data.get('content')
+    
+    prompt = f"""Aşağıdaki sosyal medya gönderisini {platform} platformu için optimize et:
+    
+    Konu: {topic}
+    İçerik: {content}
+    
+    Lütfen şunları yap:
+    1. Yazım ve dilbilgisi hatalarını düzelt
+    2. Daha etkileyici bir dil kullan
+    3. Platform için uygun 5 hashtag öner
+    4. Yanıtı şu formatta ver:
+    ---İyileştirilmiş İçerik---
+    [iyileştirilmiş post]
+    ---Hashtagler---
+    [önerilen hashtagler]
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        content_parts = response.text.split('---')
+        
+        improved_content = content_parts[1].replace('İyileştirilmiş İçerik---', '').strip()
+        hashtags = content_parts[2].replace('Hashtagler---', '').strip()
+        
+        return jsonify({
+            "success": True,
+            "improved_content": improved_content,
+            "hashtags": hashtags
+        })
+    except Exception as e:
+        print(f"Post İyileştirme Hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": "Bir hata oluştu"
+        })
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

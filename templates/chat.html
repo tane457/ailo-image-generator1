@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff8c42 0%, #ff5733 100%);
         }
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
@@ -42,13 +42,13 @@
                 <input 
                     type="text" 
                     id="userInput" 
-                    class="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white bg-opacity-90"
+                    class="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white bg-opacity-90"
                     placeholder="Benimle sohbet etmek ister misin?"
                     required
                 >
                 <button 
                     type="submit"
-                    class="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:opacity-90 transition duration-200 font-medium"
+                    class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:opacity-90 transition duration-200 font-medium"
                 >
                     Gönder
                 </button>
@@ -71,7 +71,7 @@
 
             const messageBubble = document.createElement('div');
             messageBubble.className = `max-w-[80%] rounded-xl p-4 ${
-                isUser ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white' : 'bg-white shadow-md'
+                isUser ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white' : 'bg-white shadow-md'
             }`;
             
             messageBubble.textContent = content;

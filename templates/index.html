@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AILO - AI Resim Asistanı</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h1 class="text-5xl font-bold text-center mb-2 text-white">AILO</h1>
+        <p class="text-center text-gray-200 mb-8">AI Powered Image Generator</p>
+        
+        <div class="glass-effect rounded-2xl shadow-2xl p-6">
+            <div id="chatArea" class="h-[500px] overflow-y-auto mb-4 p-4 border rounded-xl bg-white bg-opacity-50">
+                <div class="space-y-4">
+                    <!-- Mesajlar buraya gelecek -->
+                </div>
+            </div>
+
+            <form id="chatForm" class="flex gap-3">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    class="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white bg-opacity-90"
+                    placeholder="Nasıl bir resim oluşturmamı istersin?"
+                    required
+                >
+                <button 
+                    type="submit"
+                    class="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:opacity-90 transition duration-200 font-medium"
+                >
+                    Oluştur
+                </button>
+            </form>
+        </div>
+        
+        <footer class="text-center mt-8 text-gray-200">
+            <p>Powered by Taner</p>
+        </footer>
+    </div>
+
+    <script>
+        const chatArea = document.getElementById('chatArea');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+
+        function addMessage(content, isUser = false, imageUrl = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`;
+
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `max-w-[80%] rounded-xl p-4 ${
+                isUser ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white' : 'bg-white shadow-md'
+            }`;
+
+            if (imageUrl) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'relative';
+                
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.className = 'w-full rounded-lg';
+                img.alt = 'Generated Image';
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'absolute bottom-2 right-2 bg-white text-purple-600 px-4 py-2 rounded-lg shadow-lg hover:bg-purple-50 transition duration-200';
+                downloadBtn.textContent = 'İndir';
+                downloadBtn.onclick = () => downloadImage(imageUrl);
+                
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(downloadBtn);
+                messageBubble.appendChild(imgContainer);
+            } else {
+                messageBubble.textContent = content;
+            }
+
+            messageDiv.appendChild(messageBubble);
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        async function downloadImage(url) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'ailo-generated-image.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl);
+            } catch (error) {
+                console.error('İndirme hatası:', error);
+                alert('Resim indirilemedi. Lütfen tekrar deneyin.');
+            }
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const prompt = userInput.value.trim();
+            if (!prompt) return;
+
+            addMessage(prompt, true);
+            addMessage('Resim oluşturuluyor...');
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                chatArea.removeChild(chatArea.lastChild);
+
+                if (data.success) {
+                    addMessage('İşte oluşturduğum resim:');
+                    addMessage('', false, data.image_url);
+                } else {
+                    addMessage('Üzgünüm, resim oluşturulamadı. Tekrar dener misin?');
+                }
+            } catch (error) {
+                chatArea.removeChild(chatArea.lastChild);
+                addMessage('Bir hata oluştu. Lütfen tekrar dene.');
+            }
+
+            userInput.value = '';
+        });
+
+        addMessage('Merhaba! Ben AILO, sana nasıl bir resim oluşturabilirim?');
+    </script>
+</body>
+</html>

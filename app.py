@@ -5,6 +5,7 @@ import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_caching import Cache
+import google.generativeai as genai
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +17,10 @@ limiter = Limiter(
 )
 
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+# Gemini API yapılandırması
+genai.configure(api_key='AIzaSyBWNLTksgP_URKODwc4EL68R9nAM5tAgGg')
+model = genai.GenerativeModel('gemini-pro')
 
 def generate_image(prompt):
     api_url = "https://prompt.glitchy.workers.dev/gen"
@@ -58,6 +63,29 @@ def generate():
     prompt = request.json.get('prompt')
     result = generate_image(prompt)
     return jsonify(result)
+
+@app.route('/chat')
+@cache.cached(timeout=3600)
+def chat():
+    return render_template('chat.html')
+
+@app.route('/chat', methods=['POST'])
+@limiter.limit("20 per minute")
+def chat_response():
+    message = request.json.get('message')
+    
+    try:
+        response = model.generate_content(message)
+        return jsonify({
+            "success": True,
+            "response": response.text
+        })
+    except Exception as e:
+        print(f"Gemini API Hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": "Bir hata oluştu"
+        })
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

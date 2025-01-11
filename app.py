@@ -124,6 +124,36 @@ def search_music():
             'error': 'Bir hata oluştu'
         })
 
+@app.route('/video')
+@cache.cached(timeout=3600)
+def video():
+    return render_template('video.html')
+
+@app.route('/get-video-info', methods=['POST'])
+@limiter.limit("10 per minute")
+def get_video_info():
+    url = request.json.get('url')
+    try:
+        api_url = f"https://aiovd.hideme.eu.org/?url={url}"
+        response = requests.get(api_url)
+        data = response.json()
+        
+        if data["status"] == "success":
+            return jsonify({
+                "success": True,
+                "metadata": data
+            })
+        return jsonify({
+            "success": False,
+            "error": "Video bilgileri alınamadı"
+        })
+    except Exception as e:
+        print(f"Video API Hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": "Bir hata oluştu"
+        })
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

@@ -99,9 +99,23 @@ def search_music():
     try:
         response = requests.get(f'https://jiosaavn-api-codyandersan.vercel.app/search/all?query={query}&page=1&limit=6')
         data = response.json()
+        
+        # API yanıtını düzenleme
+        songs = data.get('data', {}).get('songs', {}).get('results', [])
+        formatted_songs = []
+        
+        for song in songs:
+            formatted_songs.append({
+                'name': song.get('title', ''),
+                'primaryArtists': song.get('primaryArtists', ''),
+                'image': song.get('image', [{}])[2].get('link', ''),  # 500x500 resim
+                'url': song.get('url', ''),
+                'album': song.get('album', '')
+            })
+            
         return jsonify({
             'success': True,
-            'results': data.get('songs', {}).get('results', [])
+            'results': formatted_songs
         })
     except Exception as e:
         print(f"Müzik API Hatası: {str(e)}")

@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://turuncu.online/sitemap.xml 
+Sitemap: https://turuncu.online/sitemap.xml

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_cors import CORS
 import requests
 import os
@@ -50,7 +50,11 @@ def generate_image(prompt):
 @app.route('/')
 @cache.cached(timeout=3600)
 def home():
-    return render_template('home.html')
+    return render_template('home.html', 
+        meta_title="Turuncu.online | Yapay Zeka Asistanı",
+        meta_description="Turuncu.online ile yapay zeka destekli içerik üretimi, resim oluşturma ve sosyal medya optimizasyonu yapın.",
+        meta_keywords="yapay zeka, AI, içerik üretimi, resim oluşturma, sosyal medya, turuncu.online"
+    )
 
 @app.route('/image-generator')
 @cache.cached(timeout=3600)
@@ -201,6 +205,16 @@ def improve_post():
             "success": False,
             "error": "Bir hata oluştu"
         })
+
+@app.before_request
+def redirect_to_domain():
+    if request.headers.get('X-Forwarded-Proto') == 'http':
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+        
+    if request.headers.get('Host') != 'turuncu.online':
+        url = 'https://turuncu.online' + request.path
+        return redirect(url, code=301)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

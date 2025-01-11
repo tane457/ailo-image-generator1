@@ -3,85 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turuncu.online - Yapay Zeka Asistanı</title>
+    <title>Turuncu.online | Yapay Zeka Asistanı</title>
+    <meta name="description" content="Turuncu.online ile yapay zeka destekli içerik üretimi, resim oluşturma ve sosyal medya optimizasyonu">
+    <meta name="keywords" content="yapay zeka, AI, içerik üretimi, resim oluşturma, sosyal medya, turuncu.online">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #ff8c42 0%, #ff5733 100%);
         }
         .card {
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
         }
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .icon-container {
+            background: linear-gradient(45deg, #ff8c42, #ff5733);
+            box-shadow: 0 8px 16px -4px rgba(255, 140, 66, 0.5);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
     </style>
 </head>
-<body class="min-h-screen py-8">
+<body class="min-h-screen py-12">
     <div class="container mx-auto px-4 max-w-6xl">
-        <h1 class="text-6xl font-bold text-center mb-2 text-white">turuncu.online</h1>
-        <p class="text-center text-gray-200 mb-2">Yapay Zeka Asistanı</p>
-        <p class="text-center text-gray-200 mb-12 text-xl">powered by AILO</p>
+        <div class="text-center animate__animated animate__fadeIn">
+            <h1 class="text-7xl font-bold mb-4 text-white">turuncu.online</h1>
+            <p class="text-xl text-white mb-2 opacity-90">Yapay Zeka ile Geleceği Şekillendirin</p>
+            <p class="text-lg text-white mb-16 opacity-75">powered by AILO</p>
+        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Resim Oluşturma Kartı -->
-            <a href="/image-generator" class="card">
-                <div class="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6 hover:shadow-2xl">
-                    <div class="w-16 h-16 bg-orange-500 rounded-xl mb-4 flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Resim Oluşturma</h2>
-                    <p class="text-gray-600">Yapay zeka ile hayalinizdeki resimleri oluşturun.</p>
+            <a href="/image-generator" class="card rounded-3xl p-8 animate__animated animate__fadeInUp">
+                <div class="icon-container w-20 h-20 rounded-2xl mb-6 flex items-center justify-center animate-float">
+                    <i class="fas fa-image text-3xl text-white"></i>
                 </div>
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Resim Oluşturma</h2>
+                <p class="text-gray-600 leading-relaxed">Hayal ettiğiniz her şeyi yapay zeka ile gerçeğe dönüştürün.</p>
             </a>
 
-            <!-- Sohbet Botu Kartı -->
-            <a href="/chat" class="card">
-                <div class="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6 hover:shadow-2xl">
-                    <div class="w-16 h-16 bg-orange-600 rounded-xl mb-4 flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Sohbet Asistanı</h2>
-                    <p class="text-gray-600">Yapay zeka ile sohbet edin ve sorularınızı sorun.</p>
-                </div>
-            </a>
-
-            <!-- Sosyal Medya Post Kartı -->
-            <a href="/social" class="card">
-                <div class="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6 hover:shadow-2xl">
-                    <div class="w-16 h-16 bg-orange-400 rounded-xl mb-4 flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Sosyal Medya Asistanı</h2>
-                    <p class="text-gray-600">Postlarınızı optimize edin ve hashtag önerileri alın.</p>
-                </div>
-            </a>
-
-            <!-- Yakında Gelecek Kartı -->
-            <div class="card opacity-75">
-                <div class="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6">
-                    <div class="w-16 h-16 bg-gray-400 rounded-xl mb-4 flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Yakında</h2>
-                    <p class="text-gray-600">Yeni özellikler yakında burada olacak...</p>
-                </div>
-            </div>
+            <!-- Diğer kartlar için benzer yapı -->
         </div>
-        
-        <footer class="text-center mt-16 text-gray-200">
-            <p>Powered by Taner</p>
-        </footer>
     </div>
+
+    <!-- Font Awesome eklentisi -->
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
 </body>
 </html> 

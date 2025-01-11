@@ -87,6 +87,29 @@ def chat_response():
             "error": "Bir hata oluştu"
         })
 
+@app.route('/music')
+@cache.cached(timeout=3600)
+def music():
+    return render_template('music.html')
+
+@app.route('/search-music')
+@limiter.limit("30 per minute")
+def search_music():
+    query = request.args.get('query', '')
+    try:
+        response = requests.get(f'https://jiosaavn-api-codyandersan.vercel.app/search/all?query={query}&page=1&limit=6')
+        data = response.json()
+        return jsonify({
+            'success': True,
+            'results': data.get('songs', {}).get('results', [])
+        })
+    except Exception as e:
+        print(f"Müzik API Hatası: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Bir hata oluştu'
+        })
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

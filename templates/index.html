@@ -107,12 +107,10 @@
                 const blob = await response.blob();
                 const downloadUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = downloadUrl;
+                a.href = url;
                 a.download = 'ailo-generated-image.png';
-                document.body.appendChild(a);
+                a.target = '_blank';
                 a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(downloadUrl);
             } catch (error) {
                 console.error('İndirme hatası:', error);
                 alert('Resim indirilemedi. Lütfen tekrar deneyin.');
